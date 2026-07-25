@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>マケイン風 デザインシステム</title>
+<style>
+  :root{
+    --paper:#FAF5E9;
+    --paper-deep:#F2EAD8;
+    --ink:#221C16;
+
+    /* キャラクターA（メイン） */
+    --char-a-main:#1F4E8C;
+    --char-a-sub:#F4B942;
+
+    /* キャラクターB */
+    --char-b-main:#C6B41E;
+    --char-b-sub:#2E9C93;
+
+    /* キャラクターC */
+    --char-c-main:#6B2333;
+    --char-c-sub:#E8952C;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hiragino Sans","Yu Gothic","Helvetica Neue",Arial,sans-serif;
+    line-height:1.7;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 24px 120px;}
+
+  /* ---------- ヘッダー ---------- */
+  header.hero{
+    position:relative;
+    background:var(--char-a-main);
+    color:var(--paper);
+    padding:64px 24px;
+    overflow:hidden;
+    border-bottom:8px solid var(--ink);
+  }
+  header.hero .scatter{position:absolute;inset:0;pointer-events:none;}
+  header.hero h1{
+    position:relative;
+    text-align:center;
+    font-size:clamp(28px,5vw,52px);
+    font-weight:900;
+    letter-spacing:.04em;
+    margin:0;
+    text-shadow:3px 3px 0 var(--ink);
+  }
+  header.hero h1 .accent{color:var(--char-a-sub);}
+  header.hero p.sub{
+    position:relative;
+    text-align:center;
+    margin:14px 0 0;
+    font-weight:700;
+    letter-spacing:.08em;
+    opacity:.9;
+  }
+
+  /* ---------- セクション共通 ---------- */
+  section{margin-top:88px;}
+  h2.section-title{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-size:24px;
+    font-weight:900;
+    margin:0 0 8px;
+    border-left:10px solid var(--char-a-main);
+    padding-left:14px;
+  }
+  p.section-desc{margin:0 0 32px;color:#514536;font-size:14px;}
+  .stripe-divider{
+    height:14px;
+    margin:64px 0;
+    background:repeating-linear-gradient(45deg,var(--char-a-main) 0 8px,var(--char-a-sub) 8px 16px);
+    border:3px solid var(--ink);
+    transform:rotate(-.4deg);
+  }
+
+  /* ---------- カラーパレット ---------- */
+  .palette-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+  .char-card{
+    background:var(--paper-deep);
+    border:3px solid var(--ink);
+    border-radius:4px;
+    overflow:hidden;
+    position:relative;
+  }
+  .char-card.is-main{outline:4px solid var(--char-a-sub);outline-offset:-4px;}
+  .char-card .tag{
+    position:absolute;top:12px;right:12px;
+    background:var(--ink);color:var(--paper);
+    font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;
+    letter-spacing:.05em;
+  }
+  .swatch-row{display:flex;height:110px;}
+  .swatch{flex:1;display:flex;align-items:flex-end;padding:10px;color:var(--paper);font-size:12px;font-weight:700;}
+  .char-card .meta{padding:16px;}
+  .char-card .meta h3{margin:0 0 4px;font-size:17px;}
+  .char-card .meta .role{font-size:12px;color:#7a6c58;margin:0 0 12px;}
+  .char-card .codes{display:flex;gap:16px;font-size:12px;font-family:"SFMono-Regular",Menlo,monospace;}
+  .char-card .codes div span{display:block;color:#7a6c58;font-family:inherit;}
+
+  /* ---------- 図形ライブラリ ---------- */
+  .shape-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;}
+  .shape-card{
+    background:#fff;
+    border:2px solid var(--ink);
+    border-radius:4px;
+    padding:20px 12px 14px;
+    text-align:center;
+  }
+  .shape-card svg{display:block;margin:0 auto 12px;}
+  .shape-card .label{font-size:12px;font-weight:700;}
+  .shape-card .label small{display:block;font-weight:400;color:#7a6c58;margin-top:2px;}
+
+  /* ---------- 使用例：カバー風モックアップ ---------- */
+  .mock-cover{
+    position:relative;
+    background:var(--char-a-main);
+    border:5px solid var(--ink);
+    aspect-ratio:3/4;
+    max-width:340px;
+    margin:0 auto;
+    overflow:hidden;
+    box-shadow:10px 10px 0 var(--ink);
+  }
+  .mock-cover .scatter{position:absolute;inset:0;}
+  .mock-cover .cover-text{
+    position:absolute;bottom:24px;left:0;right:0;
+    text-align:center;color:var(--paper);
+  }
+  .mock-cover .cover-text .title{
+    font-size:26px;font-weight:900;
+    text-shadow:2px 2px 0 var(--ink);
+  }
+  .mock-cover .cover-text .kicker{
+    display:inline-block;margin-top:8px;
+    background:var(--char-a-sub);color:var(--ink);
+    font-size:11px;font-weight:700;padding:4px 12px;
+    transform:rotate(-2deg);
+  }
+
+  /* バッジ / タグ */
+  .badge-row{display:flex;flex-wrap:wrap;gap:14px;}
+  .badge{
+    position:relative;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 18px 8px 14px;
+    border:2.5px solid var(--ink);
+    background:#fff;
+    font-weight:700;font-size:13px;
+    border-radius:100px;
+  }
+  .badge .dot{width:14px;height:14px;border-radius:3px;}
+
+  /* 見出しバー（章とびら風） */
+  .title-bar{
+    display:flex;align-items:center;gap:16px;
+    padding:18px 24px;
+    background:var(--ink);
+    color:var(--paper);
+    position:relative;
+    overflow:hidden;
+  }
+  .title-bar .bar-text{font-size:20px;font-weight:900;letter-spacing:.06em;position:relative;}
+  .title-bar .stripes{position:absolute;right:0;top:0;bottom:0;width:35%;
+    background:repeating-linear-gradient(-45deg,var(--char-a-sub) 0 6px,transparent 6px 12px);
+    opacity:.9;
+  }
+
+  /* ---------- ガイドテキスト ---------- */
+  .guide{background:#fff;border:2px solid var(--ink);border-radius:4px;padding:24px 28px;}
+  .guide h3{margin-top:0;font-size:15px;}
+  .guide ul{margin:0;padding-left:20px;font-size:14px;color:#3a3226;}
+  .guide li{margin-bottom:8px;}
+
+  footer{margin-top:100px;text-align:center;font-size:12px;color:#8a7c68;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="scatter" width="100%" height="100%" style="position:absolute;inset:0;">
+    <polygon points="60,40 90,90 30,90" fill="none" stroke="#FAF5E9" stroke-width="2" opacity=".5"/>
+    <circle cx="150" cy="60" r="10" fill="#FAF5E9" opacity=".4"/>
+    <rect x="90%" y="20" width="18" height="18" fill="none" stroke="#F4B942" stroke-width="2" transform="rotate(20 700 30)"/>
+    <polygon points="95%,70 98%,110 92%,110" fill="#F4B942" opacity=".6"/>
+    <circle cx="8%" cy="85%" r="8" fill="none" stroke="#FAF5E9" stroke-width="2"/>
+  </svg>
+  <h1>マケイン<span class="accent">風</span>デザインシステム</h1>
+  <p class="sub">MAKEIN STYLE GUIDE — メイン：キャラAカラー</p>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ カラーパレット ============ -->
+  <section>
+    <h2 class="section-title">01. キャラクターカラーパレット</h2>
+    <p class="section-desc">各キャラに「メインカラー」と「サブカラー」を1色ずつ割り当てる。表紙のリボンのように、メイン＝濃色（髪・軸の色）／サブ＝差し色（明るいアクセント）の組み合わせが基本。キャラAのブルー×イエローを全体のキーカラーとして扱う。</p>
+
+    <div class="palette-grid">
+      <div class="char-card is-main">
+        <span class="tag">MAIN CHARACTER</span>
+        <div class="swatch-row">
+          <div class="swatch" style="background:var(--char-a-main);">Main</div>
+          <div class="swatch" style="background:var(--char-a-sub);color:var(--ink);">Sub</div>
+        </div>
+        <div class="meta">
+          <h3>キャラA</h3>
+          <p class="role">紺碧ブルー × 黄色 — 全体のキーカラー</p>
+          <div class="codes">
+            <div><span>Main</span>#1F4E8C</div>
+            <div><span>Sub</span>#F4B942</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="char-card">
+        <div class="swatch-row">
+          <div class="swatch" style="background:var(--char-b-main);color:var(--ink);">Main</div>
+          <div class="swatch" style="background:var(--char-b-sub);">Sub</div>
+        </div>
+        <div class="meta">
+          <h3>キャラB</h3>
+          <p class="role">レモンイエロー × ターコイズ — 元気で活発な対比色</p>
+          <div class="codes">
+            <div><span>Main</span>#C6B41E</div>
+            <div><span>Sub</span>#2E9C93</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="char-card">
+        <div class="swatch-row">
+          <div class="swatch" style="background:var(--char-c-main);">Main</div>
+          <div class="swatch" style="background:var(--char-c-sub);color:var(--ink);">Sub</div>
+        </div>
+        <div class="meta">
+          <h3>キャラC</h3>
+          <p class="role">ワインレッド × マスタード — 差し色として強め</p>
+          <div class="codes">
+            <div><span>Main</span>#6B2333</div>
+            <div><span>Sub</span>#E8952C</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stripe-divider"></div>
+
+  <!-- ============ 図形ライブラリ ============ -->
+  <section>
+    <h2 class="section-title">02. 幾何学模様ライブラリ</h2>
+    <p class="section-desc">三角形・四角形（ひし形）をベースに、塗り方3種類（枠線のみ／ドット塗り／しましま塗り）を使い分ける。散らし配置の背景装飾や、見出し周りのアクセントに使用する。</p>
+
+    <svg width="0" height="0" style="position:absolute;">
+      <defs>
+        <pattern id="dots-char-a" width="9" height="9" patternUnits="userSpaceOnUse">
+          <circle cx="2.2" cy="2.2" r="1.8" fill="var(--char-a-main)"/>
+        </pattern>
+        <pattern id="stripes-char-a" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="5" height="10" fill="var(--char-a-main)"/>
+        </pattern>
+        <pattern id="dots-sub" width="9" height="9" patternUnits="userSpaceOnUse">
+          <circle cx="2.2" cy="2.2" r="1.8" fill="var(--char-a-sub)"/>
+        </pattern>
+        <pattern id="stripes-sub" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="5" height="10" fill="var(--char-a-sub)"/>
+        </pattern>
+      </defs>
+    </svg>
+
+    <div class="shape-grid">
+      <div class="shape-card">
+        <svg width="110" height="100" viewBox="0 0 110 100">
+          <polygon points="55,10 100,90 10,90" fill="none" stroke="var(--ink)" stroke-width="4"/>
+        </svg>
+        <div class="label">三角形・枠線のみ<small>outline triangle</small></div>
+      </div>
+      <div class="shape-card">
+        <svg width="110" height="100" viewBox="0 0 110 100">
+          <polygon points="55,10 100,90 10,90" fill="url(#dots-char-a)" stroke="var(--ink)" stroke-width="4"/>
+        </svg>
+        <div class="label">三角形・ドット塗り<small>dot-filled triangle</small></div>
+      </div>
+      <div class="shape-card">
+        <svg width="110" height="100" viewBox="0 0 110 100">
+          <polygon points="55,10 100,90 10,90" fill="url(#stripes-sub)" stroke="var(--ink)" stroke-width="4"/>
+        </svg>
+        <div class="label">三角形・しましま塗り<small>striped triangle</small></div>
+      </div>
+
+      <div class="shape-card">
+        <svg width="110" height="100" viewBox="0 0 110 100">
+          <rect x="20" y="20" width="60" height="60" fill="none" stroke="var(--ink)" stroke-width="4" transform="rotate(45 50 50)"/>
+        </svg>
+        <div class="label">ひし形・枠線のみ<small>outline diamond</small></div>
+      </div>
+      <div class="shape-card">
+        <svg width="110" height="100" viewBox="0 0 110 100">
+          <rect x="20" y="20" width="60" height="60" fill="url(#dots-sub)" stroke="var(--ink)" stroke-width="4" transform="rotate(45 50 50)"/>
+        </svg>
+        <div class="label">ひし形・ドット塗り<small>dot-filled diamond</small></div>
+      </div>
+      <div class="shape-card">
+        <svg width="110" height="100" viewBox="0 0 110 100">
+          <rect x="20" y="20" width="60" height="60" fill="url(#stripes-char-a)" stroke="var(--ink)" stroke-width="4" transform="rotate(45 50 50)"/>
+        </svg>
+        <div class="label">ひし形・しましま塗り<small>striped diamond</small></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stripe-divider"></div>
+
+  <!-- ============ 使用例 ============ -->
+  <section>
+    <h2 class="section-title">03. 使用例</h2>
+    <p class="section-desc">カバー風モックアップ、見出しバー、バッジの3パターン。実制作（同人誌・グッズなど）にそのまま流用できるレイアウトサンプル。</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+      <div>
+        <div class="mock-cover">
+          <svg class="scatter" width="100%" height="100%" viewBox="0 0 340 453">
+            <polygon points="40,30 60,70 20,70" fill="none" stroke="#FAF5E9" stroke-width="2"/>
+            <circle cx="290" cy="50" r="14" fill="url(#dots-sub)"/>
+            <rect x="270" y="150" width="26" height="26" fill="none" stroke="var(--char-a-sub)" stroke-width="3" transform="rotate(15 283 163)"/>
+            <polygon points="30,380 55,420 5,420" fill="url(#stripes-sub)" stroke="#FAF5E9" stroke-width="2"/>
+            <circle cx="60" cy="140" r="6" fill="#FAF5E9" opacity=".6"/>
+          </svg>
+          <div class="cover-text">
+            <div class="title">タイトルが<br>入ります！</div>
+            <span class="kicker">SERIES NAME</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="title-bar" style="margin-bottom:24px;">
+          <div class="stripes"></div>
+          <div class="bar-text">CHAPTER 01</div>
+        </div>
+
+        <div class="badge-row" style="margin-bottom:28px;">
+          <span class="badge"><span class="dot" style="background:var(--char-a-main);"></span>キャラA</span>
+          <span class="badge"><span class="dot" style="background:var(--char-b-main);"></span>キャラB</span>
+          <span class="badge"><span class="dot" style="background:var(--char-c-main);"></span>キャラC</span>
+        </div>
+
+        <div class="guide">
+          <h3>使い方メモ</h3>
+          <ul>
+            <li>1画面につきメインで使うキャラは1人まで。他キャラの色はバッジや小さいアクセントに留める。</li>
+            <li>塗り方（枠線／ドット／しましま）は同一画面内で最大2種類までに絞ると散らかりにくい。</li>
+            <li>背景の散らし図形は「サブカラー＋白抜き」の組み合わせで統一すると表紙らしい賑やかさが出る。</li>
+            <li>文字まわりは黒フチ＋ドロップシャドウでポップ体風の強さを出す。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>「マケイン」の意匠を参考にした非公式デザインシステム／個人創作用</footer>
+
+</body>
+</html>
